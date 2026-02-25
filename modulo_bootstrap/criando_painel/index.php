@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-expand-sm py-1">
+        <nav class="navbar navbar-default navbar-fixed-top navbar-expand-sm py-1">
             <div class="container container-fluid">
                 <a class="navbar-brand fw-bold" href="#">Danki code</a>
 
@@ -20,14 +20,14 @@
 
                 <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                     <ul class="nav navbar-nav links-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="#" ref_sys="editar_sobre">Editar sobre</a>
+                        <li class="nav-item" ref_sys="editar_sobre">
+                            <a class="nav-link" aria-current="page" href="#">Editar sobre</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" ref_sys="cadastrar_membro">Cadastrar membro</a>
+                        <li class="nav-item" ref_sys="cadastrar_membro">
+                            <a class="nav-link" href="#">Cadastrar membro</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" ref_sys="lista_equipes">Lista de equipes</a>
+                        <li class="nav-item" ref_sys="lista_equipes">
+                            <a class="nav-link" href="#">Lista de equipes</a>
                         </li>
                     </ul>
 
@@ -68,7 +68,19 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-3">
-                            <ul class="list-group shadow-sm mb-3">
+                            <div class="list-group mb-3">
+                                <a href="#" class="list-group-item list-group-item-action cor-principal" ref_sys="editar_sobre">
+                                    <i class="bi bi-pen"></i> Editar sobre
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action" ref_sys="cadastrar_membro">
+                                    <i class="bi bi-person-plus"></i> Cadastrar membro
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action" ref_sys="lista_equipes">
+                                    <i class="bi bi-card-list"></i> Lista de equipes 
+                                    <span class="badge text-bg-secondary">2</span>
+                                </a>
+                            </div>
+                            <!-- <ul class="list-group list-group-hover shadow-sm mb-3">
                                 <li class="list-group-item cor-principal" ref_sys="editar_sobre">
                                     <i class="bi bi-pen"></i> Editar sobre
                                 </li>
@@ -79,10 +91,10 @@
                                     <i class="bi bi-card-list"></i> Lista de equipes
                                     <span class="badge text-bg-secondary text-end">2</span>
                                 </li>
-                            </ul>
+                            </ul> -->
                         </div>
-                        <div class="col-md-9">
-                            <div class="panel mb-3 shadow-sm">
+                        <div  class="col-md-9">
+                            <div id="section_editar_sobre" class="panel mb-3 shadow-sm">
                                 <div class="panel-header cor-principal py-1 ps-2">
                                     <h3 class="m-0 fs-4 fw-medium text-light">Editar sobre</h3>
                                 </div>
@@ -98,7 +110,7 @@
                                 </div>
                             </div>
 
-                            <div class="panel mb-3 shadow-sm">
+                            <div id="section_cadastrar_membro" class="panel mb-3 shadow-sm">
                                 <div class="panel-header cor-principal py-1 ps-2">
                                     <h3 class="m-0 fs-4 fw-medium text-light">Cadastrar membro de equipe</h3>
                                 </div>
@@ -119,7 +131,7 @@
                                 </div>
                             </div>
 
-                            <div class="panel mb-3 shadow-sm">
+                            <div id="section_lista_equipes" class="panel mb-3 shadow-sm">
                                 <div class="panel-header cor-principal py-1 ps-2">
                                     <h3 class="m-0 fs-4 fw-medium text-light">Lista de membros de equipes</h3>
                                 </div>
@@ -164,12 +176,25 @@
             $(() => {
                 cliqueMenu();
 
+                // Minha função não estava funcionando porque eu estava utilizando arrow function ao invés de uma função normal
+                // isso aconteceu porque uma arrow function não cria contexto necessário para utilizar o this para referenciar o elemento clicado
                 function cliqueMenu() {
-                    $('.links-nav .nav-item, .list-group .list-group-item').click(() => {
-                        // alert($(this).attr("ref_sys"));
-                        console.log($(this).attr('class'));
+                    $('.links-nav .nav-item, .list-group .list-group-item').click(function (e) {
+                        $('.links-nav .nav-item, .list-group .list-group-item').removeClass('active').removeClass('cor-principal');
+                        $('.links-nav .nav-item[ref_sys=' + $(this).attr('ref_sys') + ']').addClass('active').addClass('cor-principal');
+                        $('.list-group .list-group-item[ref_sys=' + $(this).attr('ref_sys') + ']').addClass('active').addClass('cor-principal');
                         return false;
                     })
+                }
+
+                scrollItem();
+                
+                function scrollItem() {
+                    $('.links-nav .nav-item, .list-group .list-group-item').click(function() {
+                        var ref = '#section_' + $(this).attr('ref_sys');
+                        var offset = $(ref).offset().top;
+                        $('html, body').animate({'scrollTop' : offset - 50});
+                    });
                 }
             })
         </script>

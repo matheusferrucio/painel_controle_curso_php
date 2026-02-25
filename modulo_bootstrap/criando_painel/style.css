@@ -10,10 +10,22 @@ body {
   background-color: rgb(230, 230, 230);
 }
 
+.navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+header {
+  margin-top: 50px;
+}
+
 .navbar,
 .cor-principal {
   background-color: #21cc5b;
-  color: #ecf0f1;
+  color: #ffffff;
 }
 .navbar .navbar-brand {
   color: #ecf0f1;
@@ -48,8 +60,8 @@ body {
 .navbar .navbar-nav .nav-item.show .nav-link,
 .navbar .navbar-nav .nav-item.show .nav-link:hover,
 .navbar .navbar-nav .nav-item.show .nav-link:focus {
-  color: #ecdbff;
-  background-color: #11983f;
+  color: #ecdbff !important;
+  background-color: #11983f !important;
 }
 .navbar .navbar-toggler {
   border-color: #11983f;
@@ -151,6 +163,13 @@ ol.breadcrumb {
 
 .list-group-item {
   cursor: pointer;
+}
+
+.list-group-item.active {
+  color: #ffffff !important;
+  border: 0 !important;
+  background-color: #21cc5b !important;
+  z-index: 1;
 }
 
 .panel {
