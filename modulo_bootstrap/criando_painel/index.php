@@ -1,3 +1,12 @@
+<?php
+    $pdo = new PDO('mysql:host=localhost;dbname=projeto_bootstrap', 'root', '');
+
+    $stmt = $pdo->prepare("SELECT * FROM sessao_sobre");
+    $stmt->execute();
+
+    $sobre = $stmt->fetch(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -80,32 +89,42 @@
                                     <span class="badge text-bg-secondary">2</span>
                                 </a>
                             </div>
-                            <!-- <ul class="list-group list-group-hover shadow-sm mb-3">
-                                <li class="list-group-item cor-principal" ref_sys="editar_sobre">
-                                    <i class="bi bi-pen"></i> Editar sobre
-                                </li>
-                                <li class="list-group-item" ref_sys="cadastrar_membro">
-                                    <i class="bi bi-person-plus"></i> Cadastrar membro
-                                </li>
-                                <li class="list-group-item" ref_sys="lista_equipes">
-                                    <i class="bi bi-card-list"></i> Lista de equipes
-                                    <span class="badge text-bg-secondary text-end">2</span>
-                                </li>
-                            </ul> -->
                         </div>
-                        <div  class="col-md-9">
+                        <div class="col-md-9">
+                            <?php
+                                if(isset($_POST['sobre'])) {
+                                    if($pdo->exec("DELETE FROM sessao_sobre")) {
+                                        $stmt = $pdo->prepare("INSERT INTO sessao_sobre(html_sobre) VALUES(:sobre)");
+                                        $stmt->execute([
+                                            ":sobre" => $_POST['sobre']
+                                        ]);
+
+                                        if($stmt) {
+                                            $stmt = $pdo->prepare("SELECT * FROM sessao_sobre");
+                                            $stmt->execute();
+                                            
+                                            $sobre = $stmt->fetch(PDO::FETCH_ASSOC);
+                                            echo '<div class="alert alert-success" role="alert">Sessão <b>Sobre</b> editada com sucesso!</div>';
+                                        }
+                                    }
+                                }
+                            ?>
+                            
                             <div id="section_editar_sobre" class="panel mb-3 shadow-sm">
                                 <div class="panel-header cor-principal py-1 ps-2">
                                     <h3 class="m-0 fs-4 fw-medium text-light">Editar sobre</h3>
                                 </div>
                                 <div class="panel-body bg-light p-3">
-                                    <form>
+                                    <form method="post">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Código HTML:</label>
-                                            <textarea name="codigoHtml" id="codigoHtml" class="form-control" style="height: 150px;"></textarea>
+                                            <textarea name="sobre" id="codigoHtml" class="form-control" style="height: 150px; text-align: lef;">
+                                                <?= $sobre['html_sobre']; ?>
+                                            </textarea>
                                         </div>
 
-                                        <button type="submit" class="btn cor-principal text-light">Enviar</button>
+                                        <input type="hidden" name="editar_sobre" value="">
+                                        <button type="submit" name="acao" class="btn cor-principal text-light">Enviar</button>
                                     </form>
                                 </div>
                             </div>
