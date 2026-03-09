@@ -92,6 +92,7 @@
                         </div>
                         <div class="col-md-9">
                             <?php
+                                // Esse if identifica se o formulário de editar sobre foi preenchido e cadastra o código html no banco
                                 if(isset($_POST['sobre'])) {
                                     if($pdo->exec("DELETE FROM sessao_sobre")) {
                                         $stmt = $pdo->prepare("INSERT INTO sessao_sobre(html_sobre) VALUES(:sobre)");
@@ -106,6 +107,22 @@
                                             $sobre = $stmt->fetch(PDO::FETCH_ASSOC);
                                             echo '<div class="alert alert-success" role="alert">Sessão <b>Sobre</b> editada com sucesso!</div>';
                                         }
+                                    }
+                                }
+
+                                // Esse if identifica se o formulário de membro equipe foi preenchido e cadastra o membro da equipe no banco
+                                if(isset($_POST['cadastrar_membro'])) {
+                                    $stmt = $pdo->prepare("INSERT INTO sessao_equipes(
+                                                                nome_membro,
+                                                                descricao
+                                                           ) 
+                                                           VALUES(
+                                                                :nome,
+                                                                :descricao
+                                                           )");
+
+                                    if($stmt->execute([":nome" => $_POST['nomeMembro'], ":descricao" => $_POST['desc_membro']])) {
+                                        echo '<div class="alert alert-success" role="alert">Membro de equipe cadastrado com sucesso</div>';
                                     }
                                 }
                             ?>
@@ -134,18 +151,20 @@
                                     <h3 class="m-0 fs-4 fw-medium text-light">Cadastrar membro de equipe</h3>
                                 </div>
                                 <div class="panel-body bg-light p-3">
-                                    <form>
+                                    <form method="post">
                                         <div class="mb-3">
                                             <label for="nomeMembro" class="form-label">Nome do mebro:</label>
-                                            <input type="text" name="nomeMembro" id="nomeMembro" class="form-control" placeholder="Digite o nome do membro a ser cadastrado">
+                                            <input type="text" name="nomeMembro" id="nomeMembro" class="form-control" placeholder="Digite o nome do membro a ser cadastrado" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="" class="form-label">Descrição do membro:</label>
-                                            <textarea name="codigoHtml" id="codigoHtml" class="form-control" style="height: 150px;" placeholder="Escreva uma breve descição do membro como: suas qualidades, informações, etc"></textarea>
+                                            <textarea name="desc_membro" id="desc_membro" class="form-control" style="height: 150px;" placeholder="Escreva uma breve descição do membro como: suas qualidades, informações, etc" required></textarea>
                                         </div>
 
-                                        <button type="submit" class="btn cor-principal text-light">Cadastrar</button>
+                                        <input type="hidden" name="cadastrar_membro">
+
+                                        <button type="submit" class="btn cor-principal text-light" name="">Cadastrar</button>
                                     </form>
                                 </div>
                             </div>
@@ -167,14 +186,17 @@
                                         <tbody>
 
                                             <?php
-                                                for ($i = 0; $i < 5; $i++) {
+                                                // Seleciona todos os registros na tabela sessao_equipes e ordena por ordem crescente
+                                                $membros = $pdo->query("SELECT * FROM sessao_equipes ORDER BY nome_membro ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+                                                foreach($membros as $linha) {
                                             ?>
                                             
                                             <tr>
-                                                <th scope="row"><?= $i + 1; ?></th>
-                                                <td>Mark</td>
-                                                <td>Mark parece normal mas ele é viado</td>
-                                                <td><button type="button" class="btn btn-danger"><i class="bi bi-trash"></i></button></td>
+                                                <th scope="row"><?= $linha['id']; ?></th>
+                                                <td><?= $linha['nome_membro']; ?></td>
+                                                <td><?= $linha['descricao']; ?></td>
+                                                <td><a href="excluir.php?id=<?= $linha['id']; ?>"><button type="button" class="btn btn-danger"><i class="bi bi-trash"></i></button></a></td>
                                             </tr>
 
                                             <?php
