@@ -184,7 +184,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-
                                             <?php
                                                 // Seleciona todos os registros na tabela sessao_equipes e ordena por ordem crescente
                                                 $membros = $pdo->query("SELECT * FROM sessao_equipes ORDER BY nome_membro ASC")->fetchAll(PDO::FETCH_ASSOC);
@@ -196,7 +195,7 @@
                                                 <th scope="row"><?= $linha['id']; ?></th>
                                                 <td><?= $linha['nome_membro']; ?></td>
                                                 <td><?= $linha['descricao']; ?></td>
-                                                <td><a href="excluir.php?id=<?= $linha['id']; ?>"><button type="button" class="btn btn-danger"><i class="bi bi-trash"></i></button></a></td>
+                                                <td><button type="button" id_membro="<?= $linha['id']; ?>" class="btn btn-danger btn-deletar"><i class="bi bi-trash"></i></button></td>
                                             </tr>
 
                                             <?php
@@ -237,6 +236,23 @@
                         $('html, body').animate({'scrollTop' : offset - 50});
                     });
                 }
+            })
+
+            // Quando clicamos no botão de excluir o membro, é realizada uma requisição ajax para
+            // o arquivo PHP responsável por excluir o registro do banco. Após isso o dado some da tabela
+            $('.btn-deletar').click(function(){
+                var idMembro = $(this).attr('id_membro');
+                var elemento = $(this).parent().parent();
+
+                $.ajax({
+                    method: 'post',
+                    data: {'id_membro': idMembro},
+                    url: 'deletar.php'
+                }).done(function(){
+                    elemento.fadeOut(function(){
+                        elemento.remove();
+                    });
+                });
             })
         </script>
     </body>
